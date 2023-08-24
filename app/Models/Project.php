@@ -31,6 +31,11 @@ class Project extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function describes()
+    {
+        return $this->hasMany(Describe::class)->orderBy('order', 'asc');
+    }
+
     public function scopeSearch($query, $request)
     {
         return $query->when($request->name, function ($q, $name) {

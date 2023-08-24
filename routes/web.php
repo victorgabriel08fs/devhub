@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+Route::get('login/{provider}', 'App\Http\Controllers\Auth\LoginController@redirectToProvider')->name('login.provider');
+Route::get('{provider}/callback', 'App\Http\Controllers\Auth\LoginController@handleProviderCallback');
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         if (auth()->user()->hasRole('Super Admin'))
@@ -25,6 +26,10 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('user.projects', ['username' => auth()->user()->username]);
     })->name('home');
     Route::resource('project', ProjectController::class)->except('index');
+    Route::get('project/{project}/edit', [ProjectController::class, 'edit'])->name('project.edit');
+    Route::post('project/{project}/storeDescribe', [ProjectController::class, 'storeDescribe'])->name('project.storeDescribe');
+    Route::patch('describe/{describe}/{order}', [ProjectController::class, 'describeOrder'])->name('describe.order');
+    Route::delete('describe/{describe}', [ProjectController::class, 'describeDestroy'])->name('describe.destroy');
     Route::get('{username}/projects', [ProjectController::class, 'projects'])->name('user.projects');
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('project', AdminProjectController::class);

@@ -14,7 +14,8 @@
                     </div>
                     <div class="datagrid-item">
                         <div class="datagrid-title">Owner (username)</div>
-                        <div class="datagrid-content">{{ $project->user->name . ' (' . $project->user->username . ')' ?? '-' }}</div>
+                        <div class="datagrid-content">
+                            {{ $project->user->name . ' (' . $project->user->username . ')' ?? '-' }}</div>
                     </div>
                     <div class="datagrid-item">
                         <div class="datagrid-title">Github</div>
@@ -45,9 +46,10 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer">
-                <a href="{{ route('admin.project.index') }}" class="btn btn-outline-secondary">Projects</a>
-            </div>
         </div>
+
+        @foreach ($project->describes as $describe)
+            @include('project._partials.describe_item')
+        @endforeach
     </div>
 @endsection
