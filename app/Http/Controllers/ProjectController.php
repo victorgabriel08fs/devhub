@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Describe;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class ProjectController extends Controller
 {
@@ -21,10 +22,47 @@ class ProjectController extends Controller
         if (!isset($user->id)) {
             return redirect()->back();
         }
-        $projects = Project::search($request)->where('user_id', $user->id)->when(auth()->id() != $user->id && !auth()->user()->hasRole('Super Admin'), function ($q) {
+        $auth = auth()->user();
+        $projects = Project::search($request)->where('user_id', $user->id)->when((!isset($auth->id)) || auth()->id() != $user->id && !auth()->user()->hasRole('Super Admin'), function ($q) {
             return $q->where('visibility', 'Public');
         })->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         return view('project.index', ['projects' => $projects, 'owner' => true]);
+    }
+
+    public function import()
+    {
+        $user = auth()->user();
+        if ($user->provider == 'github' || $user->provider == 'gitlab') {
+            $url = $user->provider == 'github' ? 'https://api.github.com/users/' . $user->username . '/repos' : 'https://gitlab.com/api/v4/users/' . $user->provider_id . '/projects';
+            $response = Http::get($url);
+            $projects = $response->json();
+            function formatSlug($name)
+            {
+                $slug = strtolower($name);
+                $slug = str_replace(' ', '_', $slug);
+                return $slug;
+            }
+
+            foreach ($projects as $item) {
+                $project = Project::where('slug', formatSlug(ucwords($item['name'])))->get()->first();
+                $data = [
+                    'user_id' => $user->id,
+                    'name' => str_replace('_', ' ', ucwords($item['name'])),
+                    'slug' => formatSlug(ucwords($item['name'])),
+                    'repository_link' => $user->provider == 'github' ? $item['html_url'] : $item['web_url'],
+                    'provider' => ucwords($user->provider),
+                    'url' => $user->provider == 'github' ? (!str_contains('http', $item['homepage']) ? 'https://www.' . $item['homepage'] : $item['homepage']) : null,
+                    'visibility' => 'Public',
+                    'started_at' => $item['created_at']
+                ];
+                if (isset($project->id)) {
+                    $project->update($data);
+                } else {
+                    Project::create($data);
+                }
+            }
+        }
+        return redirect()->back();
     }
 
     /**

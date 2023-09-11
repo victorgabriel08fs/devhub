@@ -34,6 +34,9 @@
                 @if ($owner)
                     @include('project._partials.new_modal')
                 @endif
+                @if ($owner && isset(auth()->user()->provider))
+                    @include('project._partials.projects_import')
+                @endif
             </div>
         </div>
     </div>

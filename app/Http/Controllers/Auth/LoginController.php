@@ -100,10 +100,9 @@ class LoginController extends Controller
             ]);
 
             if ($provider == 'github' || $provider == 'gitlab') {
-                $url = $provider == 'github' ? 'https://api.github.com/users/' . $user->username . '/repos' : 'https://gitlab.com/api/v4/users/' . $user->id . '/projects';
+                $url = $provider == 'github' ? 'https://api.github.com/users/' . $user->nickname . '/repos' : 'https://gitlab.com/api/v4/users/' . $user->id . '/projects';
                 $response = Http::get($url);
                 $data = $response->json();
-
                 function formatSlug($name)
                 {
                     $slug = strtolower($name);

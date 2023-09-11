@@ -5,7 +5,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <h1 class="navbar-brand navbar-brand-autodark">
-            <a href=".">
+            <a href="/">
                 <img src="{{ asset('/images/logo.png') }}" style="width:5vw; height:auto" alt="DEVHub"
                     class="rounded-5 border border-4 border-primary">
             </a>
@@ -203,39 +203,45 @@
         </div>
         <div class="collapse navbar-collapse" id="sidebar-menu">
             <ul class="navbar-nav pt-lg-3">
-                <li class="nav-item {{ Route::currentRouteName() == 'user.projects' ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('user.projects', ['username' => auth()->user()->username]) }}">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
-                                <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-                                <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-                            </svg>
-                        </span>
-                        <span class="nav-link-title">
-                            My projects
-                        </span>
-                    </a>
-                </li>
+                @auth
+                    <li class="nav-item {{ Route::currentRouteName() == 'user.projects' ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('user.projects', ['username' => auth()->user()->username]) }}">
+                            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+                                    <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+                                    <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+                                </svg>
+                            </span>
+                            <span class="nav-link-title">
+                                My projects
+                            </span>
+                        </a>
+                    </li>
+                @endauth
                 @can('View Projects')
-                <hr>
-                <li class="nav-item {{ Route::currentRouteName() == 'admin.project.index' ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('admin.project.index') }}">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-folders" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M9 4h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2"></path>
-                                <path d="M17 17v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2"></path>
-                             </svg>
-                        </span>
-                        <span class="nav-link-title">
-                            Projects
-                        </span>
-                    </a>
-                </li>
+                    <hr>
+                    <li class="nav-item {{ Route::currentRouteName() == 'admin.project.index' ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.project.index') }}">
+                            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-folders"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                    stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path
+                                        d="M9 4h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2">
+                                    </path>
+                                    <path d="M17 17v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2"></path>
+                                </svg>
+                            </span>
+                            <span class="nav-link-title">
+                                Projects
+                            </span>
+                        </a>
+                    </li>
                 @endcan
                 @can('View Users')
                     <li class="nav-item {{ Route::currentRouteName() == 'admin.user.index' ? 'active' : '' }}">
@@ -312,30 +318,32 @@
                         </div>
                     </li>
                 @endcan --}}
-                <hr>
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" method="post">
-                        @csrf
-                        <button type="submit" class="nav-link">
-                            <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout"
-                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
-                                    stroke="currentColor" fill="none" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path
-                                        d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2">
-                                    </path>
-                                    <path d="M9 12h12l-3 -3"></path>
-                                    <path d="M18 15l3 -3"></path>
-                                </svg>
-                            </span>
-                            <span class="nav-link-title">
-                                Logout
-                            </span>
-                        </button>
-                    </form>
-                </li>
+                @auth
+                    <hr>
+                    <li class="nav-item">
+                        <form action="{{ route('logout') }}" method="post">
+                            @csrf
+                            <button type="submit" class="nav-link">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout"
+                                        width="24" height="24" viewBox="0 0 24 24" stroke-width="2"
+                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                        <path
+                                            d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2">
+                                        </path>
+                                        <path d="M9 12h12l-3 -3"></path>
+                                        <path d="M18 15l3 -3"></path>
+                                    </svg>
+                                </span>
+                                <span class="nav-link-title">
+                                    Logout
+                                </span>
+                            </button>
+                        </form>
+                    </li>
+                @endauth
             </ul>
         </div>
     </div>
