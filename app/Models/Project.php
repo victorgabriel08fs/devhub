@@ -12,7 +12,8 @@ class Project extends Model
     protected $fillable = [
         'slug',
         'name',
-        'github_link',
+        'repository_link',
+        'provider',
         'url',
         'started_at',
         'ended_at',

@@ -30,8 +30,8 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Github</label>
-                        <input type="url" class="form-control @error('github_link') is-invalid @enderror"
-                            name="github_link" value="{{ old('github_link', $project->github_link) }}"
+                        <input type="url" class="form-control @error('repository_link') is-invalid @enderror"
+                            name="repository_link" value="{{ old('repository_link', $project->repository_link) }}"
                             placeholder="Project's github link" />
                     </div>
                     <div class="mb-3">

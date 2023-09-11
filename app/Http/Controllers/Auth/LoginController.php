@@ -64,6 +64,9 @@ class LoginController extends Controller
     {
         $user = Socialite::driver($provider)->scopes(['read:user'])->user();
         $authUser = $this->findOrCreateUser($user, $provider);
+        if ($authUser == 'email') {
+            return redirect()->route('login')->with('error', 'Já existe um usuário cadastrado com este email.');
+        }
         Auth::login($authUser, true);
         return redirect($this->redirectTo);
     }
@@ -78,11 +81,17 @@ class LoginController extends Controller
     public function findOrCreateUser($user, $provider)
     {
         try {
-            $authUser = User::where('provider_id', $user->id)->first();
+            $authUser = User::where('provider_id', $user->id)->where('provider', $provider)->first();
             if ($authUser) {
                 return $authUser;
             }
-            $user = User::create([
+
+            $usedEmail = User::where('email', $user->email)->first();
+            if ($usedEmail) {
+                return 'email';
+            }
+
+            $newUser = User::create([
                 'name'     => $user->name,
                 'email'    => $user->email,
                 'provider' => $provider,
@@ -90,29 +99,33 @@ class LoginController extends Controller
                 'username' => $user->nickname
             ]);
 
-            $response = Http::get('https://api.github.com/users/' . $user->username . '/repos');
-            $data = $response->json();
+            if ($provider == 'github' || $provider == 'gitlab') {
+                $url = $provider == 'github' ? 'https://api.github.com/users/' . $user->username . '/repos' : 'https://gitlab.com/api/v4/users/' . $user->id . '/projects';
+                $response = Http::get($url);
+                $data = $response->json();
 
-            function formatSlug($name)
-            {
-                $slug = strtolower($name);
-                $slug = str_replace(' ', '_', $slug);
-                return $slug;
+                function formatSlug($name)
+                {
+                    $slug = strtolower($name);
+                    $slug = str_replace(' ', '_', $slug);
+                    return $slug;
+                }
+
+                foreach ($data as $item) {
+                    Project::create([
+                        'user_id' => $newUser->id,
+                        'name' => str_replace('_', ' ', ucwords($item['name'])),
+                        'slug' => formatSlug(ucwords($item['name'])),
+                        'repository_link' => $provider == 'github' ? $item['html_url'] : $item['web_url'],
+                        'provider' => ucwords($provider),
+                        'url' => $provider == 'github' ? (!str_contains('http', $item['homepage']) ? 'https://www.' . $item['homepage'] : $item['homepage']) : null,
+                        'visibility' => 'Public',
+                        'started_at' => $provider == 'github' ? $item['pushed_at'] : $item['created_at']
+                    ]);
+                }
             }
 
-            foreach ($data as $item) {
-                Project::create([
-                    'user_id' => $user->id,
-                    'name' => str_replace('_', ' ', ucwords($item['name'])),
-                    'slug' => formatSlug(ucwords($item['name'])),
-                    'github_link' => $item['html_url'],
-                    'url' => !str_contains('http', $item['homepage']) ? 'https://www.' . $item['homepage'] : $item['homepage'],
-                    'visibility' => 'Public',
-                    'started_at' => $item['pushed_at']
-                ]);
-            }
-
-            return $user;
+            return $newUser;
         } catch (\Throwable $th) {
             return redirect()->route('login');
         }

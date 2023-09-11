@@ -1,5 +1,4 @@
 <?php
-
 return [
 
     /*
@@ -34,6 +33,16 @@ return [
         'client_id' => env('GITHUB_ID'),
         'client_secret' => env('GITHUB_SECRET'),
         'redirect' => 'http://localhost:8000/github/callback',
+    ],
+    'figma' => [
+        'client_id' => env('FIGMA_ID'),
+        'client_secret' => env('FIGMA_SECRET'),
+        'redirect' => 'http://localhost:8000/figma/callback',
+    ],
+    'gitlab' => [
+        'client_id' => env('GITLAB_CLIENT_ID'),
+        'client_secret' => env('GITLAB_CLIENT_SECRET'),
+        'redirect' => 'http://localhost:8000/gitlab/callback'
     ],
 
 ];

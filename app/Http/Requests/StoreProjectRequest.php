@@ -23,7 +23,8 @@ class StoreProjectRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'github_link' => ['nullable'],
+            'repository_link' => ['nullable'],
+            'provider' => ['nullable'],
             'url' => ['nullable'],
             'started_at' => ['required'],
             'ended_at' => ['nullable'],

@@ -12,6 +12,10 @@
         "laravel/socialite": "^5.8",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
+        "socialiteproviders/figma": "^4.1",
+        "socialiteproviders/github": "^4.1",
+        "socialiteproviders/gitlab": "^4.1",
+        "socialiteproviders/manager": "^4.4",
         "spatie/laravel-permission": "^5.10"
     },
     "require-dev": {

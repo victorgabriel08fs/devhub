@@ -18,10 +18,17 @@
                             {{ $project->user->name . ' (' . $project->user->username . ')' ?? '-' }}</div>
                     </div>
                     <div class="datagrid-item">
-                        <div class="datagrid-title">Github</div>
+                        <div class="datagrid-title">Provider</div>
                         <div class="datagrid-content">
-                            <a {{ $project->github_link ? 'target="_blank"' : '' }}
-                                href="{{ $project->github_link ?? '' }}">{{ $project->github_link ?? '-' }}</a>
+                            <a {{ $project->provider ? 'target="_blank"' : '' }}
+                                href="{{ $project->provider ?? '' }}">{{ $project->provider ?? '-' }}</a>
+                        </div>
+                    </div>
+                    <div class="datagrid-item">
+                        <div class="datagrid-title">Repository link</div>
+                        <div class="datagrid-content">
+                            <a {{ $project->repository_link ? 'target="_blank"' : '' }}
+                                href="{{ $project->repository_link ?? '' }}">{{ $project->repository_link ?? '-' }}</a>
                         </div>
                     </div>
                     <div class="datagrid-item">

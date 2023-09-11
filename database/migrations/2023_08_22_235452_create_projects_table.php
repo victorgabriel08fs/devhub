@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('slug');
             $table->string('name');
             $table->string('visibility')->default('Private');
-            $table->string('github_link')->nullable();
+            $table->string('repository_link')->nullable();
+            $table->string('provider')->nullable();
             $table->string('url')->nullable();
             $table->date('started_at');
             $table->date('ended_at')->nullable();
